@@ -42,6 +42,7 @@
         margin-bottom: 2rem;
         display: flex;
         justify-content: center;
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
       }
 
       .neon-letter {
@@ -238,7 +239,7 @@
         bottom: 1rem;
         font-size: 0.8rem;
         opacity: 0.8;
-        z-index: 2;
+        z-index: 10; /* Lower z-index than player */
         background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
@@ -322,7 +323,162 @@
         text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
       }
 
-      /* Media queries for responsive design */
+      /* Music Player Styles */
+      .music-player {
+        position: fixed;
+        bottom: -180px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1000; /* Increased z-index to ensure visibility */
+        transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-align: center;
+      }
+
+      .music-player.active {
+        bottom: 70px; /* Increased to position above footer */
+      }
+
+      .player-song-info {
+        margin-bottom: 15px;
+        color: #fff;
+      }
+
+      .player-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .player-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .player-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin: 0 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        color: #fff;
+        font-size: 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .player-btn:hover {
+        background: rgba(255, 200, 0, 0.3);
+        transform: scale(1.1);
+      }
+
+      .player-btn.play-pause {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+      }
+
+      .player-progress {
+        width: 100%;
+        margin: 10px 0;
+        position: relative;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .progress-current {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #ffdd99, #ff9d00);
+        border-radius: 3px;
+        width: 0%;
+      }
+
+      .progress-handle {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        left: 0%;
+        cursor: pointer;
+      }
+
+      .volume-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 15px;
+      }
+
+      .volume-icon {
+        color: #fff;
+        margin-right: 10px;
+        font-size: 1rem;
+      }
+
+      .volume-slider {
+        width: 100px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+        position: relative;
+        cursor: pointer;
+      }
+
+      .volume-level {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #ffdd99, #ff9d00);
+        border-radius: 2px;
+        width: 70%; /* Default volume level */
+      }
+
+      .close-player {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: color 0.3s ease;
+      }
+
+      .close-player:hover {
+        color: #fff;
+      }
+
       @media screen and (max-width: 768px) {
         .container {
           padding: 1.5rem 1rem;
@@ -331,6 +487,7 @@
         .neon-title {
           font-size: 3.5rem;
           letter-spacing: 0.3rem;
+          padding: 0 10px;
         }
 
         .nav-links {
@@ -359,8 +516,14 @@
         }
 
         .neon-title {
-          font-size: 2.8rem;
-          letter-spacing: 0.2rem;
+          font-size: 2.5rem;
+          letter-spacing: 0.15rem;
+          padding: 0 5px;
+          margin-bottom: 1.5rem;
+        }
+
+        .neon-letter {
+          margin: 0 2px;
         }
 
         .nav-container {
@@ -399,6 +562,80 @@
         .footer {
           padding: 0.3rem 1rem;
           font-size: 0.7rem;
+          z-index: 99; /* Make sure footer is below player */
+        }
+
+        .music-player {
+          width: 90%; /* Use percentage width for better responsiveness */
+          max-width: 280px;
+          padding: 15px;
+          bottom: -170px; /* Adjusted starting position for mobile */
+        }
+
+        .music-player.active {
+          bottom: 65px; /* Ensure it's above footer but visible on all devices */
+        }
+
+        .player-title {
+          font-size: 0.9rem;
+        }
+
+        .player-btn {
+          width: 35px;
+          height: 35px;
+          margin: 0 6px;
+        }
+
+        .player-btn.play-pause {
+          width: 45px;
+          height: 45px;
+          font-size: 1.3rem;
+        }
+
+        .player-time {
+          font-size: 0.8rem;
+        }
+
+        .volume-control {
+          margin-top: 10px;
+        }
+
+        .volume-slider {
+          width: 80px;
+        }
+      }
+
+      @media screen and (max-width: 380px) {
+        .neon-title {
+          font-size: 2rem;
+          letter-spacing: 0.1rem;
+        }
+
+        .neon-letter {
+          margin: 0 1px;
+        }
+
+        .music-player {
+          width: 250px;
+        }
+      }
+
+      @media screen and (max-height: 600px) {
+        /* Additional media query for short screens */
+        .music-player {
+          padding: 10px;
+        }
+
+        .music-player.active {
+          bottom: 60px;
+        }
+
+        .player-controls {
+          margin-bottom: 10px;
+        }
+
+        .volume-control {
+          margin-top: 8px;
         }
       }
     </style>
@@ -412,20 +649,20 @@
 
     <!-- Audio elements -->
     <audio id="rainSound" loop preload="auto">
-      <source src="Rain.mp3" type="audio/mpeg" />
+      <source src="Rain.mp3" type="audio/mp3" />
       Your browser does not support the audio element.
     </audio>
-    
+
     <audio id="bassIshqTrack" preload="auto">
       <source src="BassIshq.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
-    
+
     <audio id="dilKiDuniyaTrack" preload="auto">
       <source src="Dil Ki Duniya Ujaad Baithi Hai.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
-    
+
     <audio id="moonTrack" preload="auto">
       <source src="Moon.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
@@ -440,12 +677,15 @@
 
     <div class="container">
       <h1 class="neon-title">
-        <span class="neon-letter">A</span>
-        <span class="neon-letter">B</span>
+        <span class="neon-letter">K</span>
+        <span class="neon-letter">W</span>
+        <span class="neon-letter">I</span>
+        <span class="neon-letter">K</span>
+        <span class="neon-letter">M</span>
         <span class="neon-letter">U</span>
-        <span class="neon-letter">Z</span>
-        <span class="neon-letter">A</span>
-        <span class="neon-letter">R</span>
+        <span class="neon-letter">S</span>
+        <span class="neon-letter">I</span>
+        <span class="neon-letter">C</span>
       </h1>
       <div class="subtitle-container">
         <p class="subtitle">Play Music Created By Me</p>
@@ -460,6 +700,33 @@
       </div>
     </div>
 
+    <div class="music-player" id="musicPlayer">
+      <button class="close-player" id="closePlayer">×</button>
+      <div class="player-song-info">
+        <div class="player-title" id="playerTitle">Select a track</div>
+      </div>
+      <div class="player-progress">
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-current" id="progressCurrent"></div>
+          <div class="progress-handle" id="progressHandle"></div>
+        </div>
+      </div>
+      <div class="player-time">
+        <span id="currentTime">0:00</span> / <span id="totalTime">0:00</span>
+      </div>
+      <div class="player-controls">
+        <button class="player-btn" id="prevBtn">⏮</button>
+        <button class="player-btn play-pause" id="playPauseBtn">▶</button>
+        <button class="player-btn" id="nextBtn">⏭</button>
+      </div>
+      <div class="volume-control">
+        <div class="volume-icon">🔊</div>
+        <div class="volume-slider" id="volumeSlider">
+          <div class="volume-level" id="volumeLevel"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="footer">© 2025 ABUZAR</div>
 
     <script>
@@ -468,27 +735,27 @@
         const rainSound = document.getElementById("rainSound");
         const soundToggle = document.getElementById("soundToggle");
         const soundIcon = document.getElementById("soundIcon");
-        
+
         // Get music tracks
         const bassIshqTrack = document.getElementById("bassIshqTrack");
         const dilKiDuniyaTrack = document.getElementById("dilKiDuniyaTrack");
         const moonTrack = document.getElementById("moonTrack");
-        
+
         // Get nav buttons
         const homeBtn = document.getElementById("homeBtn");
         const workBtn = document.getElementById("workBtn");
         const aboutBtn = document.getElementById("aboutBtn");
         const contactBtn = document.getElementById("contactBtn");
-        
+
         // Set initial volume
         rainSound.volume = 0.4;
         bassIshqTrack.volume = 0.7;
         dilKiDuniyaTrack.volume = 0.7;
         moonTrack.volume = 0.7;
-        
+
         let soundEnabled = false;
         let currentTrack = null;
-        
+
         // Add styles for active track button
         const style = document.createElement("style");
         style.textContent = `
@@ -500,7 +767,7 @@
           }
         `;
         document.head.appendChild(style);
-        
+
         // Function to stop all music tracks
         function stopAllTracks() {
           bassIshqTrack.pause();
@@ -509,14 +776,14 @@
           dilKiDuniyaTrack.currentTime = 0;
           moonTrack.pause();
           moonTrack.currentTime = 0;
-          
+
           // Remove active class from all buttons
           homeBtn.classList.remove("active-track");
           workBtn.classList.remove("active-track");
           aboutBtn.classList.remove("active-track");
           contactBtn.classList.remove("active-track");
         }
-        
+
         // Sound control function
         soundToggle.addEventListener("click", () => {
           if (soundEnabled) {
@@ -529,11 +796,11 @@
           }
           soundEnabled = !soundEnabled;
         });
-        
+
         // Music player functions
         homeBtn.addEventListener("click", (e) => {
           e.preventDefault();
-          
+
           if (currentTrack === bassIshqTrack && !bassIshqTrack.paused) {
             // If this track is already playing, pause it
             bassIshqTrack.pause();
@@ -542,42 +809,46 @@
           } else {
             // Otherwise stop other tracks and play this one
             stopAllTracks();
-            bassIshqTrack.play().catch(e => console.log("Audio play failed:", e));
+            bassIshqTrack
+              .play()
+              .catch((e) => console.log("Audio play failed:", e));
             homeBtn.classList.add("active-track");
             currentTrack = bassIshqTrack;
           }
         });
-        
+
         workBtn.addEventListener("click", (e) => {
           e.preventDefault();
-          
+
           if (currentTrack === dilKiDuniyaTrack && !dilKiDuniyaTrack.paused) {
             dilKiDuniyaTrack.pause();
             workBtn.classList.remove("active-track");
             currentTrack = null;
           } else {
             stopAllTracks();
-            dilKiDuniyaTrack.play().catch(e => console.log("Audio play failed:", e));
+            dilKiDuniyaTrack
+              .play()
+              .catch((e) => console.log("Audio play failed:", e));
             workBtn.classList.add("active-track");
             currentTrack = dilKiDuniyaTrack;
           }
         });
-        
+
         aboutBtn.addEventListener("click", (e) => {
           e.preventDefault();
-          
+
           if (currentTrack === moonTrack && !moonTrack.paused) {
             moonTrack.pause();
             aboutBtn.classList.remove("active-track");
             currentTrack = null;
           } else {
             stopAllTracks();
-            moonTrack.play().catch(e => console.log("Audio play failed:", e));
+            moonTrack.play().catch((e) => console.log("Audio play failed:", e));
             aboutBtn.classList.add("active-track");
             currentTrack = moonTrack;
           }
         });
-        
+
         contactBtn.addEventListener("click", (e) => {
           e.preventDefault();
           stopAllTracks();
@@ -695,6 +966,183 @@
           if (oldStyle) oldStyle.remove();
           createRain();
         });
+
+        // Music Player Functionality
+        const musicPlayer = document.getElementById("musicPlayer");
+        const playerTitle = document.getElementById("playerTitle");
+        const progressBar = document.getElementById("progressBar");
+        const progressCurrent = document.getElementById("progressCurrent");
+        const progressHandle = document.getElementById("progressHandle");
+        const currentTimeDisplay = document.getElementById("currentTime");
+        const totalTimeDisplay = document.getElementById("totalTime");
+        const playPauseBtn = document.getElementById("playPauseBtn");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const volumeSlider = document.getElementById("volumeSlider");
+        const volumeLevel = document.getElementById("volumeLevel");
+        const closePlayerBtn = document.getElementById("closePlayer");
+
+        // Track list for navigation
+        const tracks = [
+          { element: bassIshqTrack, title: "Bass Ishq", button: homeBtn },
+          {
+            element: dilKiDuniyaTrack,
+            title: "Dil Ki Duniya",
+            button: workBtn,
+          },
+          { element: moonTrack, title: "MoonShine", button: aboutBtn },
+        ];
+
+        let currentTrackIndex = -1;
+
+        function formatTime(seconds) {
+          const minutes = Math.floor(seconds / 60);
+          const remainingSeconds = Math.floor(seconds % 60);
+          return `${minutes}:${
+            remainingSeconds < 10 ? "0" : ""
+          }${remainingSeconds}`;
+        }
+
+        function updateProgress() {
+          if (currentTrack && !currentTrack.paused) {
+            const percent =
+              (currentTrack.currentTime / currentTrack.duration) * 100;
+            progressCurrent.style.width = `${percent}%`;
+            progressHandle.style.left = `${percent}%`;
+            currentTimeDisplay.textContent = formatTime(
+              currentTrack.currentTime
+            );
+
+            requestAnimationFrame(updateProgress);
+          }
+        }
+
+        function switchTrack(index) {
+          if (index >= 0 && index < tracks.length) {
+            stopAllTracks();
+            currentTrackIndex = index;
+            currentTrack = tracks[currentTrackIndex].element;
+            playerTitle.textContent = tracks[currentTrackIndex].title;
+
+            // Highlight the corresponding button
+            tracks.forEach((track) =>
+              track.button.classList.remove("active-track")
+            );
+            tracks[currentTrackIndex].button.classList.add("active-track");
+
+            playTrack();
+            showPlayer();
+          }
+        }
+
+        function playTrack() {
+          if (currentTrack) {
+            currentTrack
+              .play()
+              .catch((e) => console.log("Audio play failed:", e));
+            playPauseBtn.innerHTML = "⏸";
+
+            // Update the total duration display
+            currentTrack.addEventListener("loadedmetadata", () => {
+              totalTimeDisplay.textContent = formatTime(currentTrack.duration);
+            });
+
+            // Start progress tracking
+            requestAnimationFrame(updateProgress);
+          }
+        }
+
+        function pauseTrack() {
+          if (currentTrack) {
+            currentTrack.pause();
+            playPauseBtn.innerHTML = "▶";
+          }
+        }
+
+        function showPlayer() {
+          musicPlayer.classList.add("active");
+        }
+
+        function hidePlayer() {
+          musicPlayer.classList.remove("active");
+          pauseTrack();
+          stopAllTracks();
+        }
+
+        // Event Listeners for player controls
+        playPauseBtn.addEventListener("click", () => {
+          if (!currentTrack) return;
+
+          if (currentTrack.paused) {
+            playTrack();
+          } else {
+            pauseTrack();
+          }
+        });
+
+        prevBtn.addEventListener("click", () => {
+          let prevIndex = currentTrackIndex - 1;
+          if (prevIndex < 0) prevIndex = tracks.length - 1;
+          switchTrack(prevIndex);
+        });
+
+        nextBtn.addEventListener("click", () => {
+          let nextIndex = currentTrackIndex + 1;
+          if (nextIndex >= tracks.length) nextIndex = 0;
+          switchTrack(nextIndex);
+        });
+
+        progressBar.addEventListener("click", (e) => {
+          if (!currentTrack) return;
+
+          const rect = progressBar.getBoundingClientRect();
+          const percent = (e.clientX - rect.left) / rect.width;
+          currentTrack.currentTime = percent * currentTrack.duration;
+
+          // Update the UI immediately
+          progressCurrent.style.width = `${percent * 100}%`;
+          progressHandle.style.left = `${percent * 100}%`;
+        });
+
+        volumeSlider.addEventListener("click", (e) => {
+          const rect = volumeSlider.getBoundingClientRect();
+          const percent = (e.clientX - rect.left) / rect.width;
+
+          // Update all audio elements volume
+          bassIshqTrack.volume = percent;
+          dilKiDuniyaTrack.volume = percent;
+          moonTrack.volume = percent;
+
+          // Update the UI
+          volumeLevel.style.width = `${percent * 100}%`;
+        });
+
+        closePlayerBtn.addEventListener("click", hidePlayer);
+
+        // Modify existing music button click handlers to use the player
+        homeBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          switchTrack(0);
+        });
+
+        workBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          switchTrack(1);
+        });
+
+        aboutBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          switchTrack(2);
+        });
+
+        contactBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          hidePlayer();
+          stopAllTracks();
+        });
+
+        // Initialize volume UI based on initial audio volume
+        volumeLevel.style.width = `${bassIshqTrack.volume * 100}%`;
       });
     </script>
   </body>
