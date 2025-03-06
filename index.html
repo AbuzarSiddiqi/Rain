@@ -413,6 +413,7 @@
         visibility: visible;
       }
 
+      /* Enhanced player artwork hover effects */
       .player-artwork {
         width: 240px;
         height: 135px; /* 16:9 aspect ratio */
@@ -426,13 +427,39 @@
         position: relative;
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+          box-shadow 0.5s ease, border-color 0.5s ease, filter 0.5s ease;
+        cursor: pointer;
+        z-index: 2;
       }
 
       .player-artwork:hover {
-        transform: scale(1.02);
-        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5),
-          0 0 15px rgba(255, 200, 0, 0.2);
+        transform: scale(1.15) rotate(1deg);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6),
+          0 0 20px rgba(255, 200, 0, 0.4), 0 0 40px rgba(255, 120, 0, 0.2);
+        border-color: rgba(255, 230, 100, 0.7);
+        filter: brightness(1.1) contrast(1.05);
+        z-index: 3;
+      }
+
+      /* Add pulsing glow animation on hover */
+      @keyframes artworkGlow {
+        0% {
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5),
+            0 0 15px rgba(255, 200, 0, 0.3);
+        }
+        50% {
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6),
+            0 0 25px rgba(255, 200, 0, 0.5);
+        }
+        100% {
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5),
+            0 0 15px rgba(255, 200, 0, 0.3);
+        }
+      }
+
+      .player-artwork:hover {
+        animation: artworkGlow 2s infinite ease-in-out;
       }
 
       .player-artwork::before {
@@ -449,6 +476,11 @@
         );
         z-index: 1;
         border-radius: 9px;
+        transition: opacity 0.5s ease;
+      }
+
+      .player-artwork:hover::before {
+        opacity: 0.7;
       }
 
       .player-artwork::after {
@@ -462,6 +494,7 @@
         z-index: 1;
         border-bottom-left-radius: 9px;
         border-bottom-right-radius: 9px;
+        transition: opacity 0.5s ease;
       }
 
       .player-song-info {
