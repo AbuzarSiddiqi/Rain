@@ -261,6 +261,8 @@
         top: 20px;
         right: 20px;
         z-index: 10;
+        display: flex;
+        align-items: center;
       }
 
       .sound-control button {
@@ -282,6 +284,55 @@
           inset 0 0 15px rgba(255, 200, 0, 0.2);
         position: relative;
         overflow: hidden;
+      }
+
+      .rain-volume-container {
+        background: rgba(20, 20, 20, 0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 2px solid rgba(255, 200, 0, 0.3);
+        border-radius: 20px;
+        height: 36px;
+        padding: 0 15px;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transform: translateX(20px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+      }
+
+      .rain-volume-container.active {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: all;
+      }
+
+      .rain-icon {
+        color: white;
+        margin-right: 8px;
+        font-size: 14px;
+      }
+
+      .rain-slider {
+        width: 80px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        position: relative;
+        cursor: pointer;
+      }
+
+      .rain-level {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #79c2ff, #4299e1);
+        border-radius: 4px;
+        width: 40%; /* Default rain volume level */
       }
 
       .sound-control button::before {
@@ -326,9 +377,9 @@
       /* Music Player Styles */
       .music-player {
         position: fixed;
-        bottom: -180px;
+        top: 50%;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translate(-50%, -50%);
         width: 300px;
         padding: 20px;
         background: rgba(255, 255, 255, 0.1);
@@ -337,13 +388,67 @@
         border-radius: 16px;
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        z-index: 1000; /* Increased z-index to ensure visibility */
-        transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
         text-align: center;
       }
 
       .music-player.active {
-        bottom: 70px; /* Increased to position above footer */
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .player-artwork {
+        width: 240px;
+        height: 135px; /* 16:9 aspect ratio */
+        margin: 0 auto 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        background-color: rgba(0, 0, 0, 0.2);
+        background-size: contain; /* Changed from cover to contain */
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .player-artwork:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5),
+          0 0 15px rgba(255, 200, 0, 0.2);
+      }
+
+      .player-artwork::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.15),
+          transparent
+        );
+        z-index: 1;
+        border-radius: 9px;
+      }
+
+      .player-artwork::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 30%;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+        z-index: 1;
+        border-bottom-left-radius: 9px;
+        border-bottom-right-radius: 9px;
       }
 
       .player-song-info {
@@ -401,9 +506,9 @@
 
       .progress-bar {
         width: 100%;
-        height: 5px;
+        height: 10px; /* Increased height for better touch target */
         background: rgba(255, 255, 255, 0.2);
-        border-radius: 3px;
+        border-radius: 5px;
         cursor: pointer;
         position: relative;
       }
@@ -414,7 +519,7 @@
         left: 0;
         height: 100%;
         background: linear-gradient(90deg, #ffdd99, #ff9d00);
-        border-radius: 3px;
+        border-radius: 5px;
         width: 0%;
       }
 
@@ -422,8 +527,8 @@
         position: absolute;
         top: 50%;
         transform: translate(-50%, -50%);
-        width: 12px;
-        height: 12px;
+        width: 16px; /* Larger handle for mobile */
+        height: 16px;
         border-radius: 50%;
         background: #fff;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
@@ -446,9 +551,9 @@
 
       .volume-slider {
         width: 100px;
-        height: 4px;
+        height: 8px; /* Increased height for better touch target */
         background: rgba(255, 255, 255, 0.2);
-        border-radius: 2px;
+        border-radius: 4px;
         position: relative;
         cursor: pointer;
       }
@@ -459,7 +564,7 @@
         left: 0;
         height: 100%;
         background: linear-gradient(90deg, #ffdd99, #ff9d00);
-        border-radius: 2px;
+        border-radius: 4px;
         width: 70%; /* Default volume level */
       }
 
@@ -559,6 +664,21 @@
           font-size: 1rem;
         }
 
+        .rain-volume-container {
+          height: 30px;
+          padding: 0 10px;
+          margin-right: 8px;
+        }
+
+        .rain-slider {
+          width: 60px;
+          height: 4px;
+        }
+
+        .rain-icon {
+          font-size: 12px;
+        }
+
         .footer {
           padding: 0.3rem 1rem;
           font-size: 0.7rem;
@@ -569,11 +689,12 @@
           width: 90%; /* Use percentage width for better responsiveness */
           max-width: 280px;
           padding: 15px;
-          bottom: -170px; /* Adjusted starting position for mobile */
         }
 
-        .music-player.active {
-          bottom: 65px; /* Ensure it's above footer but visible on all devices */
+        .player-artwork {
+          width: 180px;
+          height: 101px; /* Maintain 16:9 aspect ratio */
+          margin-bottom: 10px;
         }
 
         .player-title {
@@ -596,8 +717,19 @@
           font-size: 0.8rem;
         }
 
+        /* Increase tap target size for mobile */
+        .progress-bar,
+        .volume-slider {
+          height: 12px;
+        }
+
+        .progress-handle {
+          width: 20px;
+          height: 20px;
+        }
+
         .volume-control {
-          margin-top: 10px;
+          margin-top: 15px;
         }
 
         .volume-slider {
@@ -618,12 +750,23 @@
         .music-player {
           width: 250px;
         }
+
+        .player-artwork {
+          width: 160px;
+          height: 90px; /* Maintain 16:9 aspect ratio */
+        }
       }
 
       @media screen and (max-height: 600px) {
         /* Additional media query for short screens */
         .music-player {
           padding: 10px;
+        }
+
+        .player-artwork {
+          width: 160px;
+          height: 90px; /* Maintain 16:9 aspect ratio */
+          margin-bottom: 8px;
         }
 
         .music-player.active {
@@ -670,6 +813,12 @@
 
     <!-- Add sound control button -->
     <div class="sound-control">
+      <div class="rain-volume-container" id="rainVolumeContainer">
+        <span class="rain-icon">💧</span>
+        <div class="rain-slider" id="rainVolumeSlider">
+          <div class="rain-level" id="rainVolumeLevel"></div>
+        </div>
+      </div>
       <button id="soundToggle" aria-label="Toggle sound">
         <span id="soundIcon">🔊</span>
       </button>
@@ -692,7 +841,7 @@
       </div>
       <div class="nav-container">
         <div class="nav-links">
-          <a href="#" id="homeBtn">Bass Ishq</a>
+          <a href="#" id="homeBtn">KhamIshq</a>
           <a href="#" id="workBtn">Dil Ki Duniya</a>
           <a href="#" id="aboutBtn">MoonShine</a>
           <a href="#" id="contactBtn">Coming Soon</a>
@@ -702,6 +851,7 @@
 
     <div class="music-player" id="musicPlayer">
       <button class="close-player" id="closePlayer">×</button>
+      <div class="player-artwork" id="playerArtwork"></div>
       <div class="player-song-info">
         <div class="player-title" id="playerTitle">Select a track</div>
       </div>
@@ -735,6 +885,11 @@
         const rainSound = document.getElementById("rainSound");
         const soundToggle = document.getElementById("soundToggle");
         const soundIcon = document.getElementById("soundIcon");
+        const rainVolumeContainer = document.getElementById(
+          "rainVolumeContainer"
+        );
+        const rainVolumeSlider = document.getElementById("rainVolumeSlider");
+        const rainVolumeLevel = document.getElementById("rainVolumeLevel");
 
         // Get music tracks
         const bassIshqTrack = document.getElementById("bassIshqTrack");
@@ -752,6 +907,8 @@
         bassIshqTrack.volume = 0.7;
         dilKiDuniyaTrack.volume = 0.7;
         moonTrack.volume = 0.7;
+        // Update rain volume UI
+        rainVolumeLevel.style.width = `${rainSound.volume * 100}%`;
 
         let soundEnabled = false;
         let currentTrack = null;
@@ -789,12 +946,70 @@
           if (soundEnabled) {
             rainSound.pause();
             soundIcon.textContent = "🔈";
+            rainVolumeContainer.classList.remove("active");
           } else {
             // Play sound - need user interaction first due to autoplay policies
             rainSound.play().catch((e) => console.log("Audio play failed:", e));
             soundIcon.textContent = "🔊";
+            rainVolumeContainer.classList.add("active");
           }
           soundEnabled = !soundEnabled;
+        });
+
+        // Rain volume control functions
+        function handleRainVolumeInteraction(e) {
+          // Get correct event position for both mouse and touch
+          const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+          if (!clientX) return;
+
+          const rect = rainVolumeSlider.getBoundingClientRect();
+          let percent = (clientX - rect.left) / rect.width;
+
+          // Clamp values between 0 and 1
+          percent = Math.max(0, Math.min(1, percent));
+
+          // Update rain sound volume
+          rainSound.volume = percent;
+
+          // Update UI
+          rainVolumeLevel.style.width = `${percent * 100}%`;
+        }
+
+        // Mouse events for rain volume
+        rainVolumeSlider.addEventListener("mousedown", (e) => {
+          handleRainVolumeInteraction(e);
+          document.addEventListener("mousemove", handleRainVolumeInteraction);
+          document.addEventListener(
+            "mouseup",
+            () => {
+              document.removeEventListener(
+                "mousemove",
+                handleRainVolumeInteraction
+              );
+            },
+            { once: true }
+          );
+        });
+
+        // Touch events for rain volume on mobile
+        rainVolumeSlider.addEventListener("touchstart", (e) => {
+          handleRainVolumeInteraction(e);
+          document.addEventListener("touchmove", handleRainVolumeInteraction);
+          document.addEventListener(
+            "touchend",
+            () => {
+              document.removeEventListener(
+                "touchmove",
+                handleRainVolumeInteraction
+              );
+            },
+            { once: true }
+          );
+        });
+
+        // Simple click event for rain volume
+        rainVolumeSlider.addEventListener("click", (e) => {
+          handleRainVolumeInteraction(e);
         });
 
         // Music player functions
@@ -970,6 +1185,7 @@
         // Music Player Functionality
         const musicPlayer = document.getElementById("musicPlayer");
         const playerTitle = document.getElementById("playerTitle");
+        const playerArtwork = document.getElementById("playerArtwork");
         const progressBar = document.getElementById("progressBar");
         const progressCurrent = document.getElementById("progressCurrent");
         const progressHandle = document.getElementById("progressHandle");
@@ -982,18 +1198,30 @@
         const volumeLevel = document.getElementById("volumeLevel");
         const closePlayerBtn = document.getElementById("closePlayer");
 
-        // Track list for navigation
+        // Track list for navigation with album artwork
         const tracks = [
-          { element: bassIshqTrack, title: "Bass Ishq", button: homeBtn },
+          {
+            element: bassIshqTrack,
+            title: "KhamIshq",
+            button: homeBtn,
+            artwork: "Images/Khamishq.png",
+          },
           {
             element: dilKiDuniyaTrack,
             title: "Dil Ki Duniya",
             button: workBtn,
+            artwork: "Images/Dilkiduniya.png",
           },
-          { element: moonTrack, title: "MoonShine", button: aboutBtn },
+          {
+            element: moonTrack,
+            title: "MoonShine",
+            button: aboutBtn,
+            artwork: "Images/Moonshine.png",
+          },
         ];
 
         let currentTrackIndex = -1;
+        let isDragging = false;
 
         function formatTime(seconds) {
           const minutes = Math.floor(seconds / 60);
@@ -1004,7 +1232,7 @@
         }
 
         function updateProgress() {
-          if (currentTrack && !currentTrack.paused) {
+          if (currentTrack && !currentTrack.paused && !isDragging) {
             const percent =
               (currentTrack.currentTime / currentTrack.duration) * 100;
             progressCurrent.style.width = `${percent}%`;
@@ -1023,6 +1251,9 @@
             currentTrackIndex = index;
             currentTrack = tracks[currentTrackIndex].element;
             playerTitle.textContent = tracks[currentTrackIndex].title;
+
+            // Update the artwork
+            playerArtwork.style.backgroundImage = `url(${tracks[currentTrackIndex].artwork})`;
 
             // Highlight the corresponding button
             tracks.forEach((track) =>
@@ -1043,9 +1274,15 @@
             playPauseBtn.innerHTML = "⏸";
 
             // Update the total duration display
-            currentTrack.addEventListener("loadedmetadata", () => {
+            if (currentTrack.readyState >= 1) {
               totalTimeDisplay.textContent = formatTime(currentTrack.duration);
-            });
+            } else {
+              currentTrack.addEventListener("loadedmetadata", () => {
+                totalTimeDisplay.textContent = formatTime(
+                  currentTrack.duration
+                );
+              });
+            }
 
             // Start progress tracking
             requestAnimationFrame(updateProgress);
@@ -1060,6 +1297,11 @@
         }
 
         function showPlayer() {
+          // Make sure we set a default background for the artwork if no track is selected
+          if (currentTrackIndex === -1) {
+            playerArtwork.style.backgroundImage = "none";
+            playerArtwork.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+          }
           musicPlayer.classList.add("active");
         }
 
@@ -1068,6 +1310,123 @@
           pauseTrack();
           stopAllTracks();
         }
+
+        // Improved event handling for both mouse and touch events
+        function handleProgressBarInteraction(e) {
+          if (!currentTrack) return;
+
+          // Get correct event position for both mouse and touch
+          const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+          if (!clientX) return;
+
+          const rect = progressBar.getBoundingClientRect();
+          let percent = (clientX - rect.left) / rect.width;
+
+          // Clamp values between 0 and 1
+          percent = Math.max(0, Math.min(1, percent));
+
+          currentTrack.currentTime = percent * currentTrack.duration;
+
+          // Update UI
+          progressCurrent.style.width = `${percent * 100}%`;
+          progressHandle.style.left = `${percent * 100}%`;
+        }
+
+        function handleVolumeSliderInteraction(e) {
+          // Get correct event position for both mouse and touch
+          const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+          if (!clientX) return;
+
+          const rect = volumeSlider.getBoundingClientRect();
+          let percent = (clientX - rect.left) / rect.width;
+
+          // Clamp values between 0 and 1
+          percent = Math.max(0, Math.min(1, percent));
+
+          // Update all audio elements volume
+          bassIshqTrack.volume = percent;
+          dilKiDuniyaTrack.volume = percent;
+          moonTrack.volume = percent;
+
+          // Update UI
+          volumeLevel.style.width = `${percent * 100}%`;
+        }
+
+        // Handle progress bar interactions
+        progressBar.addEventListener("mousedown", (e) => {
+          isDragging = true;
+          handleProgressBarInteraction(e);
+          document.addEventListener("mousemove", handleProgressBarInteraction);
+          document.addEventListener(
+            "mouseup",
+            () => {
+              isDragging = false;
+              document.removeEventListener(
+                "mousemove",
+                handleProgressBarInteraction
+              );
+              // Resume progress updates
+              if (currentTrack && !currentTrack.paused) {
+                requestAnimationFrame(updateProgress);
+              }
+            },
+            { once: true }
+          );
+        });
+
+        // Touch events for mobile
+        progressBar.addEventListener("touchstart", (e) => {
+          isDragging = true;
+          handleProgressBarInteraction(e);
+          document.addEventListener("touchmove", handleProgressBarInteraction);
+          document.addEventListener(
+            "touchend",
+            () => {
+              isDragging = false;
+              document.removeEventListener(
+                "touchmove",
+                handleProgressBarInteraction
+              );
+              // Resume progress updates
+              if (currentTrack && !currentTrack.paused) {
+                requestAnimationFrame(updateProgress);
+              }
+            },
+            { once: true }
+          );
+        });
+
+        // Volume slider events
+        volumeSlider.addEventListener("mousedown", (e) => {
+          handleVolumeSliderInteraction(e);
+          document.addEventListener("mousemove", handleVolumeSliderInteraction);
+          document.addEventListener(
+            "mouseup",
+            () => {
+              document.removeEventListener(
+                "mousemove",
+                handleVolumeSliderInteraction
+              );
+            },
+            { once: true }
+          );
+        });
+
+        // Touch events for volume
+        volumeSlider.addEventListener("touchstart", (e) => {
+          handleVolumeSliderInteraction(e);
+          document.addEventListener("touchmove", handleVolumeSliderInteraction);
+          document.addEventListener(
+            "touchend",
+            () => {
+              document.removeEventListener(
+                "touchmove",
+                handleVolumeSliderInteraction
+              );
+            },
+            { once: true }
+          );
+        });
 
         // Event Listeners for player controls
         playPauseBtn.addEventListener("click", () => {
@@ -1140,6 +1499,29 @@
           hidePlayer();
           stopAllTracks();
         });
+
+        // Event handlers for when tracks end
+        bassIshqTrack.addEventListener("ended", () => {
+          // Auto play next track
+          let nextIndex = currentTrackIndex + 1;
+          if (nextIndex >= tracks.length) nextIndex = 0;
+          switchTrack(nextIndex);
+        });
+
+        dilKiDuniyaTrack.addEventListener("ended", () => {
+          let nextIndex = currentTrackIndex + 1;
+          if (nextIndex >= tracks.length) nextIndex = 0;
+          switchTrack(nextIndex);
+        });
+
+        moonTrack.addEventListener("ended", () => {
+          let nextIndex = currentTrackIndex + 1;
+          if (nextIndex >= tracks.length) nextIndex = 0;
+          switchTrack(nextIndex);
+        });
+
+        // Initialize with no artwork background
+        playerArtwork.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
 
         // Initialize volume UI based on initial audio volume
         volumeLevel.style.width = `${bassIshqTrack.volume * 100}%`;
