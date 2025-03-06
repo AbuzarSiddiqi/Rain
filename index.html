@@ -106,13 +106,17 @@
       }
 
       .subtitle {
-        font-size: 1.2rem;
-        font-weight: 300;
+        font-family: "Dancing Script", cursive;
+        font-size: 1.6rem;
+        font-weight: 500;
         margin-bottom: 0;
         transform: translateY(10px);
         animation: fadeIn 1s forwards;
         animation-delay: 1s;
         opacity: 0;
+        color: #ffd166;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        letter-spacing: 1px;
       }
 
       .nav-container {
@@ -317,18 +321,113 @@
         z-index: 2;
         text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
       }
+
+      /* Media queries for responsive design */
+      @media screen and (max-width: 768px) {
+        .container {
+          padding: 1.5rem 1rem;
+        }
+
+        .neon-title {
+          font-size: 3.5rem;
+          letter-spacing: 0.3rem;
+        }
+
+        .nav-links {
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+
+        .nav-links a {
+          padding: 0.4rem 1rem;
+          font-size: 0.9rem;
+        }
+
+        .subtitle-container {
+          padding: 0.8rem 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .subtitle {
+          font-size: 1.4rem;
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        .container {
+          padding: 1rem 0.8rem;
+        }
+
+        .neon-title {
+          font-size: 2.8rem;
+          letter-spacing: 0.2rem;
+        }
+
+        .nav-container {
+          padding: 0.6rem 1rem;
+        }
+
+        .nav-links {
+          gap: 0.8rem;
+        }
+
+        .nav-links a {
+          padding: 0.3rem 0.8rem;
+          font-size: 0.8rem;
+        }
+
+        .subtitle-container {
+          padding: 0.7rem 1.2rem;
+          margin-bottom: 1.2rem;
+        }
+
+        .subtitle {
+          font-size: 1.2rem;
+        }
+
+        .sound-control {
+          top: 15px;
+          right: 15px;
+        }
+
+        .sound-control button {
+          width: 40px;
+          height: 40px;
+          font-size: 1rem;
+        }
+
+        .footer {
+          padding: 0.3rem 1rem;
+          font-size: 0.7rem;
+        }
+      }
     </style>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Dancing+Script:wght@500;700&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
     <div class="rain-container" id="rainContainer"></div>
 
-    <!-- Add audio element for rain sound -->
+    <!-- Audio elements -->
     <audio id="rainSound" loop preload="auto">
       <source src="Rain.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    
+    <audio id="bassIshqTrack" preload="auto">
+      <source src="BassIshq.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    
+    <audio id="dilKiDuniyaTrack" preload="auto">
+      <source src="Dil Ki Duniya Ujaad Baithi Hai.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    
+    <audio id="moonTrack" preload="auto">
+      <source src="Moon.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
 
@@ -349,16 +448,14 @@
         <span class="neon-letter">R</span>
       </h1>
       <div class="subtitle-container">
-        <p class="subtitle">
-          Exploring the digital frontier with minimalist design
-        </p>
+        <p class="subtitle">Play Music Created By Me</p>
       </div>
       <div class="nav-container">
         <div class="nav-links">
-          <a href="#">HOME</a>
-          <a href="#">WORK</a>
-          <a href="#">ABOUT</a>
-          <a href="#">CONTACT</a>
+          <a href="#" id="homeBtn">Bass Ishq</a>
+          <a href="#" id="workBtn">Dil Ki Duniya</a>
+          <a href="#" id="aboutBtn">MoonShine</a>
+          <a href="#" id="contactBtn">Coming Soon</a>
         </div>
       </div>
     </div>
@@ -371,11 +468,55 @@
         const rainSound = document.getElementById("rainSound");
         const soundToggle = document.getElementById("soundToggle");
         const soundIcon = document.getElementById("soundIcon");
-
+        
+        // Get music tracks
+        const bassIshqTrack = document.getElementById("bassIshqTrack");
+        const dilKiDuniyaTrack = document.getElementById("dilKiDuniyaTrack");
+        const moonTrack = document.getElementById("moonTrack");
+        
+        // Get nav buttons
+        const homeBtn = document.getElementById("homeBtn");
+        const workBtn = document.getElementById("workBtn");
+        const aboutBtn = document.getElementById("aboutBtn");
+        const contactBtn = document.getElementById("contactBtn");
+        
         // Set initial volume
         rainSound.volume = 0.4;
+        bassIshqTrack.volume = 0.7;
+        dilKiDuniyaTrack.volume = 0.7;
+        moonTrack.volume = 0.7;
+        
         let soundEnabled = false;
-
+        let currentTrack = null;
+        
+        // Add styles for active track button
+        const style = document.createElement("style");
+        style.textContent = `
+          .active-track {
+            border-color: rgba(255, 200, 0, 0.8) !important;
+            background: rgba(255, 200, 0, 0.15) !important;
+            box-shadow: 0 0 15px rgba(255, 200, 0, 0.4) !important;
+            color: rgb(255, 230, 100) !important;
+          }
+        `;
+        document.head.appendChild(style);
+        
+        // Function to stop all music tracks
+        function stopAllTracks() {
+          bassIshqTrack.pause();
+          bassIshqTrack.currentTime = 0;
+          dilKiDuniyaTrack.pause();
+          dilKiDuniyaTrack.currentTime = 0;
+          moonTrack.pause();
+          moonTrack.currentTime = 0;
+          
+          // Remove active class from all buttons
+          homeBtn.classList.remove("active-track");
+          workBtn.classList.remove("active-track");
+          aboutBtn.classList.remove("active-track");
+          contactBtn.classList.remove("active-track");
+        }
+        
         // Sound control function
         soundToggle.addEventListener("click", () => {
           if (soundEnabled) {
@@ -387,6 +528,60 @@
             soundIcon.textContent = "🔊";
           }
           soundEnabled = !soundEnabled;
+        });
+        
+        // Music player functions
+        homeBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          
+          if (currentTrack === bassIshqTrack && !bassIshqTrack.paused) {
+            // If this track is already playing, pause it
+            bassIshqTrack.pause();
+            homeBtn.classList.remove("active-track");
+            currentTrack = null;
+          } else {
+            // Otherwise stop other tracks and play this one
+            stopAllTracks();
+            bassIshqTrack.play().catch(e => console.log("Audio play failed:", e));
+            homeBtn.classList.add("active-track");
+            currentTrack = bassIshqTrack;
+          }
+        });
+        
+        workBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          
+          if (currentTrack === dilKiDuniyaTrack && !dilKiDuniyaTrack.paused) {
+            dilKiDuniyaTrack.pause();
+            workBtn.classList.remove("active-track");
+            currentTrack = null;
+          } else {
+            stopAllTracks();
+            dilKiDuniyaTrack.play().catch(e => console.log("Audio play failed:", e));
+            workBtn.classList.add("active-track");
+            currentTrack = dilKiDuniyaTrack;
+          }
+        });
+        
+        aboutBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          
+          if (currentTrack === moonTrack && !moonTrack.paused) {
+            moonTrack.pause();
+            aboutBtn.classList.remove("active-track");
+            currentTrack = null;
+          } else {
+            stopAllTracks();
+            moonTrack.play().catch(e => console.log("Audio play failed:", e));
+            aboutBtn.classList.add("active-track");
+            currentTrack = moonTrack;
+          }
+        });
+        
+        contactBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          stopAllTracks();
+          currentTrack = null;
         });
 
         // Random letter flickering
