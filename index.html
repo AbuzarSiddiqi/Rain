@@ -1060,6 +1060,9 @@
         const rainVolumeSlider = document.getElementById("rainVolumeSlider");
         const rainVolumeLevel = document.getElementById("rainVolumeLevel");
 
+        // Hide rain container initially
+        rainContainer.style.opacity = "0";
+
         // Get music tracks
         const bassIshqTrack = document.getElementById("bassIshqTrack");
         const dilKiDuniyaTrack = document.getElementById("dilKiDuniyaTrack");
@@ -1081,6 +1084,7 @@
 
         let soundEnabled = false;
         let currentTrack = null;
+        let rainAnimationActive = false;
 
         // Add styles for active track button
         const style = document.createElement("style");
@@ -1116,11 +1120,25 @@
             rainSound.pause();
             soundIcon.textContent = "🔈";
             rainVolumeContainer.classList.remove("active");
+            
+            // Stop rain animation
+            rainContainer.style.opacity = "0";
+            setTimeout(() => {
+              rainContainer.innerHTML = "";
+              rainAnimationActive = false;
+            }, 500);
           } else {
             // Play sound - need user interaction first due to autoplay policies
             rainSound.play().catch((e) => console.log("Audio play failed:", e));
             soundIcon.textContent = "🔊";
             rainVolumeContainer.classList.add("active");
+            
+            // Start rain animation
+            rainContainer.style.opacity = "1";
+            if (!rainAnimationActive) {
+              createRain();
+              rainAnimationActive = true;
+            }
           }
           soundEnabled = !soundEnabled;
         });
@@ -1259,6 +1277,9 @@
 
         // Create raindrops
         function createRain() {
+          // Clear any existing raindrops
+          rainContainer.innerHTML = "";
+          
           const numberOfDrops = Math.floor(window.innerWidth / 10);
 
           for (let i = 0; i < numberOfDrops; i++) {
@@ -1339,16 +1360,19 @@
           }, 10);
         }
 
-        // Initialize rain
-        createRain();
+        // Initialize rain - REMOVED initial call to createRain()
+        // Instead of calling createRain() here, we now only call it when the sound is toggled on
 
         // Handle window resize
         window.addEventListener("resize", () => {
-          rainContainer.innerHTML = "";
-          // Remove old raindrop style
-          const oldStyle = document.getElementById("raindrop-style");
-          if (oldStyle) oldStyle.remove();
-          createRain();
+          // Only recreate rain if it's currently active
+          if (rainAnimationActive) {
+            rainContainer.innerHTML = "";
+            // Remove old raindrop style
+            const oldStyle = document.getElementById("raindrop-style");
+            if (oldStyle) oldStyle.remove();
+            createRain();
+          }
         });
 
         // Music Player Functionality
