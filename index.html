@@ -1284,7 +1284,8 @@
           // Clear any existing raindrops
           rainContainer.innerHTML = "";
 
-          const numberOfDrops = Math.floor(window.innerWidth / 10);
+          // Increase density for more immersive effect
+          const numberOfDrops = Math.floor(window.innerWidth / 6); // Increased density from /10 to /6
 
           for (let i = 0; i < numberOfDrops; i++) {
             createRaindrop();
@@ -1295,39 +1296,63 @@
           const drop = document.createElement("div");
           drop.classList.add("raindrop");
 
-          const size = Math.random() * 1.5 + 0.5;
+          // More varied sizes for better depth perception
+          const size = Math.random() * 2.5 + 0.3;
           const posX = Math.random() * window.innerWidth;
-          const delay = Math.random() * 5;
-          const duration = Math.random() * 1 + 0.5;
+
+          // Add varied delay for more natural effect
+          const delay = Math.random() * 8;
+
+          // More varied speeds for natural movement
+          const duration = Math.random() * 1.5 + 0.3;
+
+          // Add wind effect with slant angle
+          const slantAngle = Math.random() * 10 - 3; // Slight bias toward right-leaning rain
 
           drop.style.left = `${posX}px`;
           drop.style.width = `${size}px`;
-          drop.style.height = `${10 * size}px`;
-          drop.style.opacity = Math.random() * 0.4 + 0.3;
+          drop.style.height = `${12 * size}px`;
+
+          // Varied opacity for depth perception
+          drop.style.opacity = Math.random() * 0.7 + 0.2;
+
+          // Add better gradient for realistic appearance
+          drop.style.background = `linear-gradient(to bottom, 
+                                    rgba(255, 255, 255, 0), 
+                                    rgba(255, 255, 255, ${
+                                      Math.random() * 0.3 + 0.5
+                                    }), 
+                                    rgba(255, 255, 255, 0.1))`;
+
+          drop.style.boxShadow = `0 0 ${
+            Math.random() * 4
+          }px rgba(255, 255, 255, 0.1)`;
           drop.style.animationDelay = `${delay}s`;
           drop.style.animationDuration = `${duration}s`;
 
-          drop.style.animation = `raindrop ${duration}s linear ${delay}s infinite`;
+          // Apply slant for wind effect
+          drop.style.transform = `rotate(${slantAngle}deg)`;
 
-          // Create style for vertical raindrop if it doesn't exist
+          // Create style for raindrop animation if it doesn't exist
           if (!document.getElementById("raindrop-style")) {
             const style = document.createElement("style");
             style.id = "raindrop-style";
             style.textContent = `
-                        @keyframes raindrop {
-                            0% {
-                                transform: translateY(-100px);
-                            }
-                            100% {
-                                transform: translateY(${
-                                  window.innerHeight + 100
-                                }px);
-                            }
-                        }
-                    `;
+              @keyframes raindrop {
+                0% {
+                  transform: translateY(-100px) rotate(${slantAngle}deg);
+                }
+                100% {
+                  transform: translateY(${
+                    window.innerHeight + 100
+                  }px) rotate(${slantAngle}deg);
+                }
+              }
+            `;
             document.head.appendChild(style);
           }
 
+          drop.style.animation = `raindrop ${duration}s linear ${delay}s infinite`;
           rainContainer.appendChild(drop);
 
           // Remove the raindrop after animation completes to save memory
@@ -1338,34 +1363,53 @@
 
           // Create splash when raindrop hits bottom
           setTimeout(() => {
-            createSplash(posX);
+            createSplash(posX, size);
           }, (delay + duration) * 1000 - 100);
         }
 
-        function createSplash(posX) {
-          const splash = document.createElement("div");
-          splash.classList.add("splash");
+        function createSplash(posX, dropSize) {
+          // Multiple particles for each splash for realism
+          const particleCount = Math.floor(Math.random() * 3) + 2;
 
-          splash.style.left = `${posX}px`;
-          splash.style.bottom = `${Math.random() * 100}px`;
+          for (let i = 0; i < particleCount; i++) {
+            const splash = document.createElement("div");
+            splash.classList.add("splash");
 
-          rainContainer.appendChild(splash);
+            // Randomize splash position slightly around impact point
+            const offsetX = Math.random() * 10 - 5;
+            const bottomPosition = Math.random() * 30;
 
-          // Animate the splash
-          setTimeout(() => {
-            splash.style.transition =
-              "transform 0.3s ease-out, opacity 0.3s ease-out";
-            splash.style.transform = "scale(4)";
-            splash.style.opacity = "0";
+            // Size splash based on original drop
+            const splashSize = (Math.random() * 2 + 1) * dropSize;
+
+            splash.style.left = `${posX + offsetX}px`;
+            splash.style.bottom = `${bottomPosition}px`;
+            splash.style.width = `${splashSize}px`;
+            splash.style.height = `${splashSize * 0.3}px`; // Flatter shape for splash
+            splash.style.opacity = Math.random() * 0.4 + 0.1;
+            splash.style.background = "rgba(255, 255, 255, 0.4)";
+            splash.style.borderRadius = "50%";
+
+            rainContainer.appendChild(splash);
+
+            // Animate the splash with different directions
+            const angle = Math.random() * 180 - 90; // -90 to 90 degrees
+            const distance = Math.random() * 15 + 5;
+            const duration = Math.random() * 0.5 + 0.2;
 
             setTimeout(() => {
-              splash.remove();
-            }, 300);
-          }, 10);
-        }
+              splash.style.transition = `transform ${duration}s ease-out, opacity ${duration}s ease-out`;
+              splash.style.transform = `translate(${
+                Math.cos(angle) * distance
+              }px, ${Math.sin(angle) * distance}px) scale(0)`;
+              splash.style.opacity = "0";
 
-        // Initialize rain - REMOVED initial call to createRain()
-        // Instead of calling createRain() here, we now only call it when the sound is toggled on
+              setTimeout(() => {
+                splash.remove();
+              }, duration * 1000);
+            }, 10);
+          }
+        }
 
         // Handle window resize
         window.addEventListener("resize", () => {
